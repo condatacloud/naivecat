@@ -45,10 +45,12 @@ func cmdFlags() bool {
 func setup() bool {
 	// 检查是否安装过，没有的话执行安装步骤
 	if !service.SetupService.Done() {
-		service.SetupService.Install()
+		ui.NewInstallUI()
+		return true
 	} else {
 		if service.SetupService.NeedUpgrade() {
 			ui.NewUpgradeUI()
+			// 升级之后需要重新打开
 			return true
 		}
 	}
@@ -66,8 +68,6 @@ func main() {
 	}
 	// 加载配置文件
 	ui.GConfig.LoadConfig()
-	// 初始化Naive的执行环境，拷贝执行文件到系统内
-	service.NaiveService.InitEnv()
 	// 创建一个app
 	app := app.New()
 	ui.App = app

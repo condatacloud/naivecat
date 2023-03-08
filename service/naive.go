@@ -15,7 +15,6 @@ type NaiveLogCallback func(line string)
 
 type INaive interface {
 	GetVersion() string
-	InitEnv()
 	Start() error
 	Close()
 	UpdateConfig(config *model.NaiveConfig) error
@@ -31,7 +30,26 @@ type naiveService struct {
 	running       bool
 }
 
-var NaiveService INaive = &naiveService{}
+var NaiveService INaive = newNaiveService()
+
+func newNaiveService() *naiveService {
+
+	home, err := tools.HomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	ns := &naiveService{}
+
+	ns.naiveFilePath = home + "/.naivecat/naive"
+	if runtime.GOOS == "windows" {
+		ns.naiveFilePath = home + "/.naivecat/naive.exe"
+	}
+
+	ns.naiveConfPath = home + "/.naivecat/naive_config.json"
+
+	return ns
+}
 
 func (s *naiveService) GetVersion() string {
 	cmd := exec.Command(s.naiveFilePath, "--version")
@@ -40,36 +58,6 @@ func (s *naiveService) GetVersion() string {
 		panic(err)
 	}
 	return string(out)
-}
-
-func (s *naiveService) InitEnv() {
-	home, err := tools.HomeDir()
-	if err != nil {
-		panic(err)
-	}
-
-	s.naiveFilePath = home + "/.naivecat/naive"
-	if runtime.GOOS == "windows" {
-		s.naiveFilePath = home + "/.naivecat/naive.exe"
-	}
-
-	if tools.File.Exists(s.naiveFilePath) {
-		// os.Remove(s.naiveFilePath)
-		if err := tools.File.WriteBin(NaiveBytes, s.naiveFilePath); err != nil {
-			panic(err)
-		}
-
-		// 增加执行权限
-		if runtime.GOOS != "windows" {
-			cmd := exec.Command("chmod", "+x", s.naiveFilePath)
-			_, err := cmd.CombinedOutput()
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	s.naiveConfPath = home + "/.naivecat/naive_config.json"
 }
 
 func (s *naiveService) Start() error {
