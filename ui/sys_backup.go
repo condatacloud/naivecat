@@ -51,7 +51,7 @@ func (u *SysBakUI) onImportBackup() {
 
 	GConfig = conf
 	GConfig.Update()
-	UpdateUIData()
+	InitUIData()
 	controls.Msgbox("成功", "导入备份成功", Wnd)
 }
 

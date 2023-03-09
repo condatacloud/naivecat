@@ -1,8 +1,8 @@
 package ui
 
 import (
-	"naivecat/model"
 	"naivecat/ui/controls"
+	"naivecat/ui/recipe"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -27,7 +27,7 @@ func (u *SysGeneralUI) Update() {
 }
 
 func (u *SysGeneralUI) NewUI() *fyne.Container {
-	u.themeSelect = widget.NewSelect(model.THEMES, u.onThemeChanged)
+	u.themeSelect = widget.NewSelect(recipe.THEMES, u.onThemeChanged)
 	u.enableLogCbx = widget.NewCheck("开启日志", u.onEnableLogChanged)
 
 	vbox1 := container.NewVBox(
@@ -61,10 +61,14 @@ func (u *SysGeneralUI) onEnableLogChanged(b bool) {
 }
 
 func (u *SysGeneralUI) onOkClicked() {
+	info := "成功保存配置"
+	if u.theme != GConfig.Theme {
+		info += "\n主题需要重新启动生效"
+	}
 	GConfig.Theme = u.theme
 	GConfig.EnableLog = u.enableLog
 	GConfig.Update()
-	controls.Msgbox("成功", "成功保存配置", Wnd)
+	controls.Msgbox("成功", info, Wnd)
 }
 
 func (u *SysGeneralUI) onCancelClicked() {

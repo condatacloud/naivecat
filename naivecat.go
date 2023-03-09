@@ -7,13 +7,13 @@ import (
 	"naivecat/resource"
 	"naivecat/service"
 	"naivecat/ui"
-	"naivecat/ui/recipe"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/driver/desktop"
 )
 
+// https://github.com/fyne-io/setup
 // https://github.com/Nikeweke/pomadorik
 // https://blog.meetwhy.com/blog/some-experience-in-the-use-of-fyne.html
 // https://www.cnblogs.com/wustjq/p/16525001.html
@@ -69,13 +69,14 @@ func main() {
 	// 加载配置文件
 	ui.GConfig.LoadConfig()
 	// 创建一个app
-	app := app.New()
+	app := app.NewWithID(appName)
 	ui.App = app
-	// 设置主题、字体
-	app.Settings().SetTheme(&recipe.DarkTheme{})
+	// 初始化主题
+	ui.InitTheme()
 	// 创建一个窗口
 	wnd = app.NewWindow(appName)
 	ui.Wnd = wnd
+	wnd.SetMaster()
 	// 修改窗口大小
 	wnd.Resize(fyne.NewSize(winWidth, winHeight))
 	// 设置图标
@@ -89,7 +90,7 @@ func main() {
 	// 构建UI
 	wnd.SetContent(ui.NewUI())
 	// 更新UI的一些数据，否则页面显示时数据是空的
-	ui.UpdateUIData()
+	ui.InitUIData()
 	// 启动
 	wnd.Show()
 	// UI显示之后需要做的一些事情

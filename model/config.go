@@ -2,6 +2,7 @@ package model
 
 import (
 	"naivecat/tools"
+	"naivecat/ui/recipe"
 )
 
 type Config struct {
@@ -41,7 +42,7 @@ func (c *Config) LoadConfig() {
 	filePath := folder + "/config.json"
 	if !tools.File.Exists(filePath) {
 		c.AutoLink = false
-		c.Theme = THEME_DARK
+		c.Theme = recipe.THEME_DARK
 		if err := tools.Serialize(c, filePath); err != nil {
 			panic(err)
 		}

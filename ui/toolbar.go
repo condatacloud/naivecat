@@ -2,29 +2,23 @@ package ui
 
 import (
 	"fmt"
-	"naivecat/resource"
 	"naivecat/service"
 	"naivecat/tools"
 	"naivecat/ui/controls"
+	"naivecat/ui/recipe"
 	"strconv"
 	"time"
 
-	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
 type ToolbarUI struct {
-	startBtn     *widget.ToolbarAction
-	startIconRes *fyne.StaticResource
-	stopIconRes  *fyne.StaticResource
-	topToolbar   *widget.Toolbar
+	startBtn   *widget.ToolbarAction
+	topToolbar *widget.Toolbar
 }
 
-var toolbarUI = &ToolbarUI{
-	startIconRes: fyne.NewStaticResource("start", resource.IconStart),
-	stopIconRes:  fyne.NewStaticResource("stop", resource.IconStop),
-}
+var toolbarUI = &ToolbarUI{}
 
 func (u *ToolbarUI) Update() {}
 
@@ -47,13 +41,13 @@ func (u *ToolbarUI) NewFooterUI() *widget.Toolbar {
 }
 
 func (u *ToolbarUI) NewTopUI() *widget.Toolbar {
-	u.startBtn = widget.NewToolbarAction(u.startIconRes, u.start)
+	u.startBtn = widget.NewToolbarAction(recipe.Icons[recipe.IconNameStart], u.start)
 
 	u.topToolbar = widget.NewToolbar(
 		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(fyne.NewStaticResource("internet", resource.IconInternet), u.ping),
+		widget.NewToolbarAction(recipe.Icons[recipe.IconNameNetwork], u.ping),
 		u.startBtn,
-		widget.NewToolbarAction(fyne.NewStaticResource("shared", resource.IconShare), func() {
+		widget.NewToolbarAction(recipe.Icons[recipe.IconNameShared], func() {
 			linkPannelUI.qrcode2Clipboard()
 		}),
 	)
@@ -82,7 +76,7 @@ func (u *ToolbarUI) ping() {
 func (u *ToolbarUI) start() {
 	if service.NaiveService.IsRunning() {
 		u.stop()
-		u.startBtn.SetIcon(u.startIconRes)
+		u.startBtn.SetIcon(recipe.Icons[recipe.IconNameStart])
 		u.topToolbar.Refresh()
 		return
 	}
@@ -136,7 +130,7 @@ func (u *ToolbarUI) start() {
 	}()
 
 	time.Sleep(600 * time.Millisecond)
-	u.startBtn.SetIcon(u.stopIconRes)
+	u.startBtn.SetIcon(recipe.Icons[recipe.IconNameStop])
 	u.topToolbar.Refresh()
 }
 
