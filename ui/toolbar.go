@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"naivecat/model"
 	"naivecat/service"
 	"naivecat/tools"
 	"naivecat/ui/controls"
@@ -76,8 +77,7 @@ func (u *ToolbarUI) ping() {
 func (u *ToolbarUI) start() {
 	if service.NaiveService.IsRunning() {
 		u.stop()
-		u.startBtn.SetIcon(recipe.Icons[recipe.IconNameStart])
-		u.topToolbar.Refresh()
+		u.setStartIcon()
 		return
 	}
 
@@ -119,6 +119,8 @@ func (u *ToolbarUI) start() {
 		go func() {
 			if err := service.ProxyService.Start(proxyHttp); err != nil {
 				controls.Msgbox("错误", err.Error(), Wnd)
+				model.Log.Error(err.Error())
+				u.setStartIcon()
 			}
 		}()
 	}
@@ -126,12 +128,13 @@ func (u *ToolbarUI) start() {
 	go func() {
 		if err := service.NaiveService.Start(); err != nil {
 			controls.Msgbox("错误", fmt.Sprintf("运行该链接发生错误\n%s", err.Error()), Wnd)
+			model.Log.Error(err.Error())
+			u.setStartIcon()
 		}
 	}()
 
 	time.Sleep(600 * time.Millisecond)
-	u.startBtn.SetIcon(recipe.Icons[recipe.IconNameStop])
-	u.topToolbar.Refresh()
+	u.setStopIcon()
 }
 
 func (u *ToolbarUI) stop() {
@@ -145,4 +148,14 @@ func (u *ToolbarUI) stop() {
 			controls.Msgbox("错误", err.Error(), Wnd)
 		}
 	}
+}
+
+func (u *ToolbarUI) setStartIcon() {
+	u.startBtn.SetIcon(recipe.Icons[recipe.IconNameStart])
+	u.topToolbar.Refresh()
+}
+
+func (u *ToolbarUI) setStopIcon() {
+	u.startBtn.SetIcon(recipe.Icons[recipe.IconNameStop])
+	u.topToolbar.Refresh()
 }

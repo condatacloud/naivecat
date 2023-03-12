@@ -37,6 +37,9 @@ func (u *LinkImportUI) NewUI() {
 }
 
 func (u *LinkImportUI) importLink(txt string) {
+	if txt == "" {
+		return
+	}
 	link := &model.Link{}
 	link.FromString(txt)
 	GConfig.Links = append(GConfig.Links, link)

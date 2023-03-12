@@ -16,7 +16,7 @@ func (t *LightTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) 
 	case theme.ColorNameFocus:
 		return color.NRGBA{R: 0x00, G: 0xdb, B: 0x2a, A: 0x2a}
 	case theme.ColorNameSelection:
-		return color.NRGBA{R: 0x00, G: 0x36, B: 0x40, A: 0x40}
+		return color.NRGBA{R: 128, G: 222, B: 234, A: 255}
 	}
 
 	return t.paletColorNamed(name)

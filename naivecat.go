@@ -6,8 +6,12 @@ import (
 	"naivecat/model"
 	"naivecat/resource"
 	"naivecat/service"
+	"naivecat/tools"
 	"naivecat/ui"
 	"os"
+	"runtime/pprof"
+
+	_ "net/http/pprof"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -58,7 +62,44 @@ func setup() bool {
 	return false
 }
 
+func newLog() *tools.Logger {
+	home, err := tools.HomeDir()
+	if err != nil {
+		panic(err)
+	}
+	folder := home + "/.naivecat"
+	if !tools.File.Exists(folder) {
+		if err := tools.File.Mkdir(folder); err != nil {
+			panic(err)
+		}
+	}
+
+	return tools.NewLog(folder)
+}
+
 func main() {
+	home, _ := tools.HomeDir()
+	// cpu
+	fcpu, err := os.Create(home + "/.naivecat/cpuprofile")
+	if err != nil {
+		panic(err)
+	}
+	defer fcpu.Close()
+	pprof.StartCPUProfile(fcpu)
+	defer pprof.StopCPUProfile()
+
+	// memory
+	fmem, err := os.Create(home + "/.naivecat/memprofile")
+	if err != nil {
+		panic(err)
+	}
+
+	pprof.WriteHeapProfile(fmem)
+	defer fmem.Close()
+
+	// 初始化日志
+	model.Log = newLog()
+	defer model.Log.Close()
 	// 命令解析命令，如果返回true就代表退出程序
 	if cmdFlags() {
 		return

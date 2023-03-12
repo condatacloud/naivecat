@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"runtime"
 	"time"
 
 	probing "github.com/prometheus-community/pro-bing"
@@ -30,6 +31,10 @@ func (s *pingService) Ping(ip string) (int64, error) {
 		return 0, err
 	}
 	pinger.Count = 2
+	// windows需要设置
+	if runtime.GOOS == "windows" {
+		pinger.SetPrivileged(true)
+	}
 
 	execResult := make(chan bool)
 	go func(execResult chan<- bool) {

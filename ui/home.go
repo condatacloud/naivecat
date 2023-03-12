@@ -13,11 +13,14 @@ func newHomeUI() *container.TabItem {
 	linkPannel := linkPannelUI.NewUI()
 	console := consoleUI.NewUI()
 
-	split := container.NewVSplit(
+	content := container.NewBorder(
 		linkPannel,
-		console,
+		nil,
+		nil,
+		nil,
+		container.NewMax(console),
 	)
-	split.SetOffset(0.25)
-	lay := container.NewBorder(topTools, nil, linkTableArea, nil, split)
+
+	lay := container.NewBorder(topTools, nil, linkTableArea, nil, content)
 	return container.NewTabItem("主页", lay)
 }

@@ -33,11 +33,15 @@ func (c *Config) Serialize(filePath string) error {
 func (c *Config) LoadConfig() {
 	home, err := tools.HomeDir()
 	if err != nil {
+		Log.Error(err.Error())
 		panic(err)
 	}
 	folder := home + "/.naivecat"
 	if !tools.File.Exists(folder) {
-		tools.File.Mkdir(folder)
+		if err := tools.File.Mkdir(folder); err != nil {
+			Log.Error(err.Error())
+			panic(err)
+		}
 	}
 
 	filePath := folder + "/config.json"
@@ -46,6 +50,7 @@ func (c *Config) LoadConfig() {
 		c.Theme = recipe.THEME_DARK
 		c.Scale = 1.0
 		if err := tools.Serialize(c, filePath); err != nil {
+			Log.Error(err.Error())
 			panic(err)
 		}
 	}
@@ -53,6 +58,7 @@ func (c *Config) LoadConfig() {
 	c.checkConfig()
 
 	if err := tools.Deserialize(c, filePath); err != nil {
+		Log.Error(err.Error())
 		panic(err)
 	}
 }
@@ -60,11 +66,15 @@ func (c *Config) LoadConfig() {
 func (c *Config) Update() {
 	home, err := tools.HomeDir()
 	if err != nil {
+		Log.Error(err.Error())
 		panic(err)
 	}
 	folder := home + "/.naivecat"
 	if !tools.File.Exists(folder) {
-		tools.File.Mkdir(folder)
+		if err := tools.File.Mkdir(folder); err != nil {
+			Log.Error(err.Error())
+			panic(err)
+		}
 	}
 
 	// id重新排序
@@ -76,6 +86,7 @@ func (c *Config) Update() {
 
 	filePath := folder + "/config.json"
 	if err := tools.Serialize(c, filePath); err != nil {
+		Log.Error(err.Error())
 		panic(err)
 	}
 }

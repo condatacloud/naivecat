@@ -38,6 +38,7 @@ func (u *LinkTableUI) NewUI() *widget.List {
 			return
 		}
 		GConfig.DefaultLink = id
+		// 选择新的link，需要更新pannel中的信息
 		linkPannelUI.Update()
 	}
 

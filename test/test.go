@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
@@ -12,16 +10,27 @@ func main() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("ProgressBar Widget")
 
-	progress := widget.NewProgressBar()
-	infinite := widget.NewProgressBarInfinite()
+	top := container.NewHBox(widget.NewLabel("sadda"), widget.NewButton("sdsds", func() {
 
-	go func() {
-		for i := 0.0; i <= 1.0; i += 0.1 {
-			time.Sleep(time.Millisecond * 250)
-			progress.SetValue(i)
-		}
-	}()
+	}))
 
-	myWindow.SetContent(container.NewVBox(progress, infinite))
+	bottom := widget.NewMultiLineEntry()
+
+	myWindow.SetContent(
+		container.NewBorder(
+			widget.NewLabel("Welcome"),
+			nil,
+			widget.NewLabel("Footer"),
+			nil,
+
+			container.NewBorder(
+				top,
+				nil,
+				nil,
+				nil,
+				container.NewMax(bottom),
+			),
+		),
+	)
 	myWindow.ShowAndRun()
 }
