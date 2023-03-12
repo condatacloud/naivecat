@@ -70,7 +70,7 @@ func main() {
 	// 加载配置文件
 	ui.GConfig.LoadConfig()
 	// 设置缩放比例
-	os.Setenv("FYNE_SCALE", fmt.Sprintf("%f", ui.GConfig.Scale))
+	os.Setenv("FYNE_SCALE", fmt.Sprintf("%.2f", ui.GConfig.Scale))
 	// 创建一个app
 	app := app.NewWithID(appName)
 	ui.App = app

@@ -28,6 +28,7 @@ func (u *SysGeneralUI) Update() {
 	u.enableLog = GConfig.EnableLog
 	u.themeSelect.SetSelected(u.theme)
 	u.enableLogCbx.SetChecked(u.enableLog)
+	u.scaleEntry.SetText(fmt.Sprintf("%.2f", GConfig.Scale))
 }
 
 func (u *SysGeneralUI) NewUI() *fyne.Container {

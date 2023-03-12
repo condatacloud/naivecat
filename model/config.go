@@ -49,11 +49,12 @@ func (c *Config) LoadConfig() {
 			panic(err)
 		}
 	}
+
+	c.checkConfig()
+
 	if err := tools.Deserialize(c, filePath); err != nil {
 		panic(err)
 	}
-
-	c.checkConfig()
 }
 
 func (c *Config) Update() {
