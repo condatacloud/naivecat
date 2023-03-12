@@ -40,8 +40,10 @@ func (s *forwardHttpService) Start(info *ForwardInfo) error {
 	}()
 	s.ForwardInfo = info
 	s.server = &http.Server{
-		Addr:    fmt.Sprintf("%s:%s", s.ForwardInfo.DstIP, s.ForwardInfo.DstPort),
-		Handler: http.HandlerFunc(s.serveHTTP),
+		Addr:         fmt.Sprintf("%s:%s", s.ForwardInfo.DstIP, s.ForwardInfo.DstPort),
+		Handler:      http.HandlerFunc(s.serveHTTP),
+		ReadTimeout:  100 * time.Minute,
+		WriteTimeout: 100 * time.Minute,
 	}
 
 	err := s.server.ListenAndServe()

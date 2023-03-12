@@ -18,7 +18,8 @@ type Config struct {
 		Enable bool   `json:"enable"`
 		Port   string `json:"port"`
 	} `json:"http"`
-	EnableLog bool `json:"enableLog"`
+	EnableLog bool    `json:"enableLog"`
+	Scale     float64 `json:"scale"`
 }
 
 func (c *Config) Deserialize(filePath string) error {
@@ -43,6 +44,7 @@ func (c *Config) LoadConfig() {
 	if !tools.File.Exists(filePath) {
 		c.AutoLink = false
 		c.Theme = recipe.THEME_DARK
+		c.Scale = 1.0
 		if err := tools.Serialize(c, filePath); err != nil {
 			panic(err)
 		}
@@ -94,5 +96,8 @@ func (c *Config) checkConfig() {
 		defaultLink := &Link{}
 		defaultLink.NewDefaultLink()
 		c.Links = append(c.Links, defaultLink)
+	}
+	if tools.IsEqual(c.Scale, 0) {
+		c.Scale = 1.0
 	}
 }

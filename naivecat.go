@@ -7,6 +7,7 @@ import (
 	"naivecat/resource"
 	"naivecat/service"
 	"naivecat/ui"
+	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -68,6 +69,8 @@ func main() {
 	}
 	// 加载配置文件
 	ui.GConfig.LoadConfig()
+	// 设置缩放比例
+	os.Setenv("FYNE_SCALE", fmt.Sprintf("%f", ui.GConfig.Scale))
 	// 创建一个app
 	app := app.NewWithID(appName)
 	ui.App = app
@@ -89,6 +92,8 @@ func main() {
 	wnd.SetCloseIntercept(func() { wnd.Hide() })
 	// 构建UI
 	wnd.SetContent(ui.NewUI())
+	// 显示在屏幕中间
+	wnd.CenterOnScreen()
 	// 更新UI的一些数据，否则页面显示时数据是空的
 	ui.InitUIData()
 	// 启动

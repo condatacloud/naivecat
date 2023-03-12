@@ -1,8 +1,11 @@
 package ui
 
 import (
+	"fmt"
+	"naivecat/tools"
 	"naivecat/ui/controls"
 	"naivecat/ui/recipe"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -15,6 +18,7 @@ type SysGeneralUI struct {
 	enableLog    bool
 	themeSelect  *widget.Select
 	enableLogCbx *widget.Check
+	scaleEntry   *widget.Entry
 }
 
 var sysGeneralUI = &SysGeneralUI{}
@@ -29,15 +33,20 @@ func (u *SysGeneralUI) Update() {
 func (u *SysGeneralUI) NewUI() *fyne.Container {
 	u.themeSelect = widget.NewSelect(recipe.THEMES, u.onThemeChanged)
 	u.enableLogCbx = widget.NewCheck("开启日志", u.onEnableLogChanged)
+	u.scaleEntry = widget.NewEntry()
 
-	vbox1 := container.NewVBox(
-		container.New(layout.NewFormLayout(), widget.NewLabel("主题"), u.themeSelect),
+	form1 := container.New(
+		layout.NewFormLayout(),
+		widget.NewLabel("主题"),
+		u.themeSelect,
+		widget.NewLabel("缩放"),
+		u.scaleEntry,
 	)
 	vbox2 := container.NewVBox(
 		u.enableLogCbx,
 	)
 	column := container.NewGridWithColumns(3,
-		vbox1,
+		form1,
 		vbox2,
 	)
 
@@ -61,12 +70,24 @@ func (u *SysGeneralUI) onEnableLogChanged(b bool) {
 }
 
 func (u *SysGeneralUI) onOkClicked() {
+	scale, err := strconv.ParseFloat(u.scaleEntry.Text, 64)
+	if err != nil {
+		controls.Msgbox("错误", fmt.Sprintf("%s 不是正确的数字", u.scaleEntry.Text), Wnd)
+		return
+	}
+
 	info := "成功保存配置"
 	if u.theme != GConfig.Theme {
-		info += "\n主题需要重新启动生效"
+		info += "\n主题修改需要重新启动生效"
 	}
+
+	if !tools.IsEqual(scale, GConfig.Scale) {
+		info += "\n缩放修改需要重新启动生效"
+	}
+
 	GConfig.Theme = u.theme
 	GConfig.EnableLog = u.enableLog
+	GConfig.Scale = scale
 	GConfig.Update()
 	controls.Msgbox("成功", info, Wnd)
 }
