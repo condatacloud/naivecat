@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"naivecat/model"
 	"net"
 	"net/http"
 	"time"
@@ -36,6 +37,9 @@ var ProxyService IForwardHttp = &forwardHttpService{}
 func (s *forwardHttpService) Start(info *ForwardInfo) error {
 	s.running = true
 	defer func() {
+		if err := recover(); err != nil {
+			model.Log.Error(err)
+		}
 		s.running = false
 	}()
 	s.ForwardInfo = info

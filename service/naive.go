@@ -63,6 +63,9 @@ func (s *naiveService) GetVersion() string {
 func (s *naiveService) Start() error {
 	s.running = true
 	defer func() {
+		if err := recover(); err != nil {
+			model.Log.Error(err)
+		}
 		s.running = false
 	}()
 	ctx, cancel := context.WithCancel(context.Background())
