@@ -17,6 +17,7 @@ import (
 type ToolbarUI struct {
 	startBtn   *widget.ToolbarAction
 	topToolbar *widget.Toolbar
+	activeLink *controls.ToolbarIconLbl
 }
 
 var toolbarUI = &ToolbarUI{}
@@ -44,7 +45,10 @@ func (u *ToolbarUI) NewFooterUI() *widget.Toolbar {
 func (u *ToolbarUI) NewTopUI() *widget.Toolbar {
 	u.startBtn = widget.NewToolbarAction(recipe.Icons[recipe.IconNameStart], u.start)
 
+	u.activeLink = controls.NewToolbarIconLbl(recipe.Icons[recipe.IconNameLink], "")
+
 	u.topToolbar = widget.NewToolbar(
+		u.activeLink,
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(recipe.Icons[recipe.IconNameNetwork], u.ping),
 		u.startBtn,
@@ -133,6 +137,7 @@ func (u *ToolbarUI) start() {
 		}
 	}()
 
+	u.activeLink.SetText(link.Name)
 	time.Sleep(600 * time.Millisecond)
 	u.setStopIcon()
 }
@@ -141,6 +146,7 @@ func (u *ToolbarUI) stop() {
 	if service.NaiveService.IsRunning() {
 		service.NaiveService.Close()
 		consoleUI.clear()
+		u.activeLink.SetText("")
 	}
 
 	if service.ProxyService.IsRunning() {

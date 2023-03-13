@@ -163,11 +163,11 @@ func (l *Link) ToText() string {
 	)
 }
 
-func (l *Link) ToQCode() image.Image {
+func (l *Link) ToQCode() (image.Image, error) {
 	info := l.ToText()
 	png, err := qrcode.Encode(info, qrcode.Medium, 256)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	return tools.Image.Png2Image(png)
 }

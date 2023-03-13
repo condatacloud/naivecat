@@ -3,6 +3,7 @@ package main
 import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -18,7 +19,7 @@ func main() {
 
 	myWindow.SetContent(
 		container.NewBorder(
-			widget.NewLabel("Welcome"),
+			container.NewHBox(widget.NewIcon(theme.DocumentIcon()), widget.NewLabel("Welcome")),
 			nil,
 			widget.NewLabel("Footer"),
 			nil,

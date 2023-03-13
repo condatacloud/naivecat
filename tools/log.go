@@ -1,46 +1,73 @@
 package tools
 
 import (
+	"fmt"
 	"log"
 	"os"
 )
 
 type Logger struct {
-	debugLog  *log.Logger
-	errorLog  *log.Logger
-	debugFile *os.File
-	errorFile *os.File
+	log     *log.Logger
+	logFile *os.File
+	level   int
 }
 
-func NewLog(folder string) *Logger {
-	debugFile, err := os.OpenFile(folder+"/debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalln("Faild to open error logger file:", err)
-	}
+// https://blog.51cto.com/u_10125763/3697502
 
-	errorFile, err := os.OpenFile(folder+"/error.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+const (
+	DEBUG = 0
+	INFO  = 1
+	ERROR = 2
+)
+
+func NewLog(folder string, level ...string) *Logger {
+	lel := ERROR
+	if len(level) != 0 {
+		l := level[0]
+		if l == "debug" {
+			lel = DEBUG
+		} else if l == "error" {
+			lel = ERROR
+		} else if l == "info" {
+			lel = INFO
+		} else {
+			lel = ERROR
+		}
+	}
+	logFile, err := os.OpenFile(folder+"/system.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Faild to open error logger file:", err)
 	}
 
 	logger := &Logger{}
 	// 日期，时间，文件名
-	logger.debugLog = log.New(debugFile, "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
-	logger.errorLog = log.New(errorFile, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
-	logger.debugFile = debugFile
-	logger.errorFile = errorFile
+	logger.log = log.New(logFile, "DEFAULT: ", log.Ldate|log.Ltime|log.Lshortfile)
+	logger.logFile = logFile
+	logger.level = lel
 	return logger
 }
 
 func (l *Logger) Close() {
-	l.debugFile.Close()
-	l.errorFile.Close()
+	l.logFile.Close()
 }
 
-func (l *Logger) Debug(txt string) {
-	l.debugLog.Println(txt)
+func (l *Logger) Debug(v ...interface{}) {
+	if DEBUG >= l.level {
+		l.log.SetPrefix("DEBUG: ")
+		l.log.Output(2, fmt.Sprintln(v...))
+	}
 }
 
-func (l *Logger) Error(txt string) {
-	l.errorLog.Println(txt)
+func (l *Logger) Info(v ...interface{}) {
+	if INFO >= l.level {
+		l.log.SetPrefix("INFO: ")
+		l.log.Output(2, fmt.Sprintln(v...))
+	}
+}
+
+func (l *Logger) Error(v ...interface{}) {
+	if ERROR >= l.level {
+		l.log.SetPrefix("ERROR: ")
+		l.log.Output(2, fmt.Sprintln(v...))
+	}
 }

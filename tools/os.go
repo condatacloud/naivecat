@@ -43,16 +43,3 @@ func Exec(wd string, name string, subname string, args ...string) (string, error
 
 	return string(bytes), nil
 }
-
-// func checkSingleton() (windows.Handle, error) {
-// 	path, err := os.Executable()
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	hashName := md5.Sum([]byte(path))
-// 	name, err := syscall.UTF16PtrFromString("Local\\" + hex.EncodeToString(hashName[:]))
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	return windows.CreateMutex(nil, false, name)
-// }

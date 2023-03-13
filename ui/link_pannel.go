@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"naivecat/model"
 	"naivecat/ui/controls"
 
 	"fyne.io/fyne/v2"
@@ -42,7 +43,11 @@ func (u *LinkPannelUI) Update() {
 		u.port.SetText(link.Port)
 		u.protocol.SetText(link.Protocol)
 		u.padding.SetText(fmt.Sprintf("%v", link.Padding))
-		u.qrcode.Image = link.ToQCode()
+		qrcode, err := link.ToQCode()
+		if err != nil {
+			model.Log.Error(err)
+		}
+		u.qrcode.Image = qrcode
 		u.qrcode.Refresh()
 	}
 }

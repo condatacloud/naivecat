@@ -12,6 +12,7 @@ const (
 	IconNameStop    fyne.ThemeIconName = "stop"
 	IconNameNetwork fyne.ThemeIconName = "network"
 	IconNameShared  fyne.ThemeIconName = "shared"
+	IconNameLink    fyne.ThemeIconName = "link"
 )
 
 var (
@@ -20,5 +21,6 @@ var (
 		IconNameStop:    theme.NewThemedResource(fyne.NewStaticResource("stop", resource.IconStop)),
 		IconNameNetwork: theme.NewThemedResource(fyne.NewStaticResource("network", resource.IconNetwork)),
 		IconNameShared:  theme.NewThemedResource(fyne.NewStaticResource("shared", resource.IconShared)),
+		IconNameLink:    theme.NewThemedResource(fyne.NewStaticResource("link", resource.IconLink)),
 	}
 )
